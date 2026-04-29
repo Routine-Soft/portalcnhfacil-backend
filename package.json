@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "@abacatepay/sdk": "^1.2.0",
+    "@fastify/cors": "^11.2.0",
+    "argon2": "^0.44.0",
+    "axios": "^1.6.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "fastify": "^5.8.5",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.2",
+    "node": "^25.8.2",
+    "nodemon": "^3.1.14"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js"
+  }
+}
