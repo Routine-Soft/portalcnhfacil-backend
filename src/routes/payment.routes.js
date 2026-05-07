@@ -129,7 +129,8 @@ fastify.post('/payments/webhook', async (req, reply) => {
 
   try {
 
-    const webhookSecret = req.headers['x-webhook-secret']
+    // Tenta pegar o secret do header ou da query string
+    const webhookSecret = req.headers['x-webhook-secret'] || req.query.webhookSecret
 
     if (webhookSecret !== process.env.ABACATEPAY_WEBHOOK_SECRET) {
 
@@ -148,7 +149,8 @@ fastify.post('/payments/webhook', async (req, reply) => {
     // checkout.completed or billing.completed
     if (event === 'checkout.completed' || event === 'billing.completed') {
 
-      const checkoutId = data?.id
+      // Nota: AbacatePay envia o ID dentro de data.checkout.id
+      const checkoutId = data?.checkout?.id || data?.id
 
       console.log('💰 Checkout aprovado:', checkoutId)
 
