@@ -51,6 +51,11 @@ const historySchema = new mongoose.Schema({
   gateway_response: {
     type: Object,
     default: null
+  },
+
+  user: {
+    type: Object,
+    default: null
   }
 
 }, {

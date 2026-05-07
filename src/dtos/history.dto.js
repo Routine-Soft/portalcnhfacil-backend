@@ -5,6 +5,7 @@ export function createHistoryDto(body) {
     titulo:       body.titulo,
     aluno:        body.aluno,
     preco:        body.preco,
+    user:         body.user || null,
   }
 }
 

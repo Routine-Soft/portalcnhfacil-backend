@@ -59,7 +59,7 @@ export async function paymentRoutes(fastify) {
 
   fastify.post('/payments/checkout', async (req, reply) => {
 
-    const { productId, name } = req.body
+    const { productId, name, user } = req.body
     
 
     if (!productId) {
@@ -103,6 +103,8 @@ export async function paymentRoutes(fastify) {
         checkout_id: checkout.id,
 
         status: 'pending',
+
+        user: user || null,
 
         created_at: new Date(),
 
