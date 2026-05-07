@@ -60,6 +60,7 @@ export async function paymentRoutes(fastify) {
   fastify.post('/payments/checkout', async (req, reply) => {
 
     const { productId, name } = req.body
+    
 
     if (!productId) {
       return reply.status(400).send({
