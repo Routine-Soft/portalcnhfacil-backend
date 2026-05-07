@@ -86,6 +86,7 @@ export async function paymentRoutes(fastify) {
 
         metadata: {
           courseName: name || 'curso',
+          productId,
         }
       })
 
@@ -94,17 +95,15 @@ export async function paymentRoutes(fastify) {
 
         titulo: name,
 
-        // aluno: user?.nome || 'Aluno',
-
         preco: 199.90,
-
-        // user_id: user?.id,
 
         product_id: productId,
 
         checkout_id: checkout.id,
 
-        status: 'pending'
+        status: 'pending',
+
+        created_at: new Date(),
 
       })
 
@@ -125,46 +124,73 @@ export async function paymentRoutes(fastify) {
   })
 
 
-  fastify.post('/payments/webhook', async (req, reply) => {
+fastify.post('/payments/webhook', async (req, reply) => {
 
-    try {
+  try {
 
-      const { event, data } = req.body
+    const webhookSecret = req.headers['x-webhook-secret']
 
-      console.log('📩 Webhook recebido:', event)
+    if (webhookSecret !== process.env.ABACATEPAY_WEBHOOK_SECRET) {
 
-      if (event === 'checkout.paid') {
-
-        const checkoutId = data.id
-
-        console.log('💰 Pagamento confirmado:', checkoutId)
-
-        // atualiza purchase
-        await History.findOneAndUpdate(
-
-          { checkout_id: checkoutId },
-
-          {
-            status: 'paid',
-            paid_at: new Date()
-          }
-
-        )
-
-      }
-
-      return reply.send({ received: true })
-
-    } catch (error) {
-
-      console.error('Erro webhook:', error)
-
-      return reply.status(500).send({
-        message: 'Erro ao processar webhook'
+      return reply.status(401).send({
+        message: 'Webhook inválido'
       })
 
     }
 
-  })
+    const { event, data } = req.body
+
+    console.log('📩 Webhook recebido:', event)
+
+    console.log(JSON.stringify(data, null, 2))
+
+    // checkout.completed or billing.completed
+    if (event === 'checkout.completed' || event === 'billing.completed') {
+
+      const checkoutId = data?.id
+
+      console.log('💰 Checkout aprovado:', checkoutId)
+
+      const history = await History.findOne({
+        checkout_id: checkoutId
+      })
+
+      if (!history) {
+
+        console.log('⚠️ Histórico não encontrado')
+
+        return reply.send({
+          received: true
+        })
+
+      }
+
+      history.status = 'paid'
+
+      history.paid_at = new Date()
+
+      history.gateway_response = data
+
+      await history.save()
+
+      console.log('✅ Histórico atualizado')
+
+    }
+
+    return reply.send({
+      received: true
+    })
+
+  } catch (error) {
+
+    console.error('Erro webhook:', error)
+
+    return reply.status(500).send({
+      message: 'Erro ao processar webhook'
+    })
+
+  }
+
+})
 
 }

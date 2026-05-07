@@ -38,12 +38,10 @@ export const PaymentService = {
   async handleWebhook(body) {
     const { event, data } = body
     console.log(`📩 Webhook AbacatePay — evento: ${event}`)
+    console.log('Dados webhook:', JSON.stringify(data, null, 2))
 
-    if (event === 'billing.paid' && data?.status === 'PAID') {
-      const { course_id, user_id, course_name } = data.metadata || {}
-      console.log(`✅ Pago — curso: ${course_name} (${course_id}) | usuário: ${user_id}`)
-      // TODO: salvar compra no banco para liberar acesso
-    }
+    // Nota: O webhook é processado na rota em payment.routes.js
+    // Este método é mantido para compatibilidade com o controller
 
     return { received: true }
   },

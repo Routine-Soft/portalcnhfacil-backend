@@ -46,6 +46,11 @@ const historySchema = new mongoose.Schema({
 
   paid_at: {
     type: Date
+  },
+
+  gateway_response: {
+    type: Object,
+    default: null
   }
 
 }, {
