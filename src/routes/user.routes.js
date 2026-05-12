@@ -9,4 +9,5 @@ export async function userRoutes(fastify) {
   fastify.post  ('/login',      UserController.login)
   fastify.post  ('/logout',     UserController.logout)
   fastify.post  ('/refresh',    UserController.refresh)
+  fastify.patch('/users/:id/password', UserController.updatePassword)
 }

@@ -76,4 +76,19 @@ export const UserService = {
       throw new Error('Token inválido')
     }
   },
+
+  async updatePassword(id, body) {
+    const { senhaAtual, senhaNova } = body
+    const user = await User.findById(id)
+    if (!user) throw new Error('Usuário não encontrado')
+    
+    // Verificar se a senha atual está correta
+    const valid = await argon2.verify(user.senha, senhaAtual)
+    if (!valid) throw new Error('Senha atual incorreta')
+    
+    // Hashear e atualizar
+    user.senha = await argon2.hash(senhaNova)
+    await user.save()
+    return user
+}
 }

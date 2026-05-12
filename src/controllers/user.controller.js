@@ -45,4 +45,9 @@ export const UserController = {
     const result = await UserService.refresh(refreshToken)
     return reply.send(result)
   },
+
+  async updatePassword(req, reply) {
+  const user = await UserService.updatePassword(req.params.id, req.body)
+  return reply.send(user)
+}
 }
