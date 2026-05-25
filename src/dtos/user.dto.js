@@ -17,7 +17,7 @@ export function createUserDto(body) {
 
 // O que pode ser atualizado (sem email/senha por aqui — rotas separadas depois)
 export function updateUserDto(body) {
-  const allowed = ['nome', 'whatsapp', 'cnh', 'categoriaCnh', 'ufCnh', 'dataNascimento', 'endereco']
+  const allowed = ['nome', 'whatsapp', 'cnh', 'categoriaCnh', 'ufCnh', 'dataNascimento', 'endereco', 'access']
   return Object.fromEntries(
     Object.entries(body).filter(([key]) => allowed.includes(key))
   )

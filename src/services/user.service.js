@@ -23,7 +23,9 @@ export const UserService = {
 
   async update(id, body) {
     const dto = updateUserDto(body)
+    console.log('DTO enviado para atualizar:', dto)
     const user = await User.findByIdAndUpdate(id, { $set: dto }, { new: true, runValidators: true })
+    console.log('Usuário após update:', user?.toJSON ? user.toJSON() : user)
     if (!user) throw new Error('Usuário não encontrado')
     return user
   },
