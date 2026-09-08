@@ -10,6 +10,8 @@ import { historyRoutes } from './src/routes/history.routes.js'
 import { paymentRoutes } from './src/routes/payment.routes.js'
 
 dotenv.config()
+console.log('MP_ACCESS_TOKEN prefix:', process.env.MP_ACCESS_TOKEN?.slice(0, 15))
+console.log('MP_ACCESS_TOKEN length:', process.env.MP_ACCESS_TOKEN?.length)
 
 const fastify = Fastify({ logger: true })
 
