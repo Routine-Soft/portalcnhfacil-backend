@@ -1,3 +1,5 @@
+// src/index.js
+
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import dotenv from 'dotenv'
