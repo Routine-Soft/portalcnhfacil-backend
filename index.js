@@ -18,6 +18,20 @@ await fastify.register(cors, {            // 👈
   allowedHeaders: ['Content-Type', 'Authorization'],
 })
 
+/* =====================================
+   Error Handler Global
+===================================== */
+
+fastify.setErrorHandler((error, request, reply) => {
+
+  fastify.log.error(error)
+
+  return reply.status(error.statusCode || 500).send({
+    success: false,
+    message: error.message || 'Erro interno do servidor'
+  })
+})
+
 // Rotas
 fastify.register(userRoutes, { prefix: '/api' })
 fastify.register(courseRoutes, { prefix: '/api' })
