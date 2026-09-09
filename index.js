@@ -1,17 +1,14 @@
 // src/index.js
 
+import 'dotenv/config'   // 👈 PRIMEIRA LINHA, antes de tudo — carrega o .env imediatamente
+
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import dotenv from 'dotenv'
 import db from './src/database/db.js'
 import { userRoutes } from './src/routes/user.routes.js'
 import { courseRoutes } from './src/routes/course.routes.js'
 import { historyRoutes } from './src/routes/history.routes.js'
 import { paymentRoutes } from './src/routes/payment.routes.js'
-
-dotenv.config()
-console.log('MP_ACCESS_TOKEN prefix:', process.env.MP_ACCESS_TOKEN?.slice(0, 15))
-console.log('MP_ACCESS_TOKEN length:', process.env.MP_ACCESS_TOKEN?.length)
 
 const fastify = Fastify({ logger: true })
 
@@ -25,7 +22,6 @@ const ALLOWED_ORIGINS = [
 // CORS — precisa ser registrado ANTES das rotas
 await fastify.register(cors, {
   origin: (origin, callback) => {
-    // requisições sem "origin" (ex: curl, Postman, webhook do MP) são liberadas
     if (!origin || ALLOWED_ORIGINS.includes(origin)) {
       callback(null, true)
       return
@@ -37,8 +33,6 @@ await fastify.register(cors, {
   allowedHeaders: ['Content-Type', 'Authorization', 'x-webhook-secret'],
 })
 
-// Log de toda requisição recebida — útil pra confirmar se o preflight
-// está chegando no servidor. Pode remover depois que resolver o problema.
 fastify.addHook('onRequest', async (req) => {
   fastify.log.info(`${req.method} ${req.url} — origin: ${req.headers.origin || 'sem origin'}`)
 })

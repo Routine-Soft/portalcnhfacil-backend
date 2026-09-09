@@ -2,7 +2,7 @@
 
 import crypto from 'node:crypto'
 import { Preference } from 'mercadopago'
-import { mpClient } from '../config/mercadopago.js'
+import { getMpClient } from '../config/mercadopago.js'
 import { History } from '../models/History.model.js'
 
 export async function paymentRoutes(fastify) {
@@ -18,7 +18,7 @@ export async function paymentRoutes(fastify) {
     }
 
     try {
-      const preference = new Preference(mpClient)
+      const preference = new Preference(getMpClient())
 
       // external_reference é o que vamos usar no webhook pra
       // encontrar o registro no History (equivalente ao checkout_id do AbacatePay)
