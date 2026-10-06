@@ -136,17 +136,27 @@ export async function paymentRoutes(fastify) {
           return reply.send({ received: true })
         }
 
-        // status do MP: pending | approved | authorized | in_process | rejected | cancelled | refunded | charged_back
+        // status do MP: pending | approved | authorized | in_process | in_mediation | rejected | cancelled | refunded | charged_back
+        // Convertidos para os status aceitos pelo History: pending | paid | failed | refunded
+        const wasPaid = history.status === 'paid'
+
         if (payment.status === 'approved') {
           history.status = 'paid'
-          history.paid_at = new Date()
+          history.paid_at = history.paid_at || new Date()
         } else if (['rejected', 'cancelled'].includes(payment.status)) {
-          history.status = 'failed'
-        } else {
-          history.status = payment.status
+          // Uma tentativa recusada não desfaz um pagamento já aprovado na mesma preferência
+          if (!wasPaid) history.status = 'failed'
+        } else if (['refunded', 'charged_back'].includes(payment.status)) {
+          history.status = 'refunded'
+        } else if (!wasPaid) {
+          // Notificações fora de ordem (ex: in_process depois de approved) não rebaixam o status
+          history.status = 'pending'
         }
 
-        history.gateway_response = payment
+        // Mantém os dados do pagamento aprovado se chegar uma tentativa posterior que não o altera
+        if (!wasPaid || history.status !== 'paid' || payment.status === 'approved') {
+          history.gateway_response = payment
+        }
         await history.save()
 
         console.log('✅ Histórico atualizado:', history.status)

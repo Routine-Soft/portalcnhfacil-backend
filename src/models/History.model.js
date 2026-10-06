@@ -29,7 +29,7 @@ const historySchema = new mongoose.Schema({
 
   product_id: {
     type: String,
-    required: true
+    default: null
   },
 
   checkout_id: {
@@ -40,7 +40,7 @@ const historySchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ['pending', 'paid'],
+    enum: ['pending', 'paid', 'failed', 'refunded'],
     default: 'pending'
   },
 
