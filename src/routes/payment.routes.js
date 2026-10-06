@@ -38,8 +38,8 @@ export async function paymentRoutes(fastify) {
           ],
           back_urls: {
             success: `${process.env.APP_URL}/pagamento/sucesso`,
-            failure: `${process.env.APP_URL}/cursos`,
-            pending: `${process.env.APP_URL}/cursos`,
+            failure: `${process.env.APP_URL}/`,
+            pending: `${process.env.APP_URL}/`,
           },
           auto_return: 'approved',
           notification_url: `${process.env.APP_URL_BACKEND || process.env.APP_URL}/api/payments/webhook`,
